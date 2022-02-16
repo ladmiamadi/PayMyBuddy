@@ -16,19 +16,19 @@
                     <div class="collapse navbar-collapse d-flex justify-content-end" id="navbarNav">
                         <ul class="navbar-nav">
                             <li class="nav-item mx-3">
-                                <a class="nav-link active" aria-current="page" href="#">Home</a>
+                                <a class="nav-link active" aria-current="page" th:href="@{/home}">Home</a>
                             </li>
                             <li class="nav-item mx-3">
-                                <a class="nav-link" href="#">Transfer</a>
+                                <a class="nav-link" th:href="@{/transfert}">Transfer</a>
                             </li>
                             <li class="nav-item mx-3">
-                                <a class="nav-link" href="#">Profile</a>
+                                <a class="nav-link" th:href="@{/profile}">Profile</a>
                             </li>
                             <li class="nav-item mx-3">
-                                <a class="nav-link" href="#">Contact</a>
+                                <a class="nav-link" th:href="@{/contact}">Contact</a>
                             </li>
                             <li class="nav-item mx-3">
-                                <a class="nav-link" href="#">Log Off</a>
+                                <a class="nav-link" th:href="@{/logOff}">Log Off</a>
                             </li>
                         </ul>
                     </div>
@@ -40,7 +40,7 @@
         <div class="col bg-light">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item"><a th:href="@{/home}">Home</a></li>
                     <li class="breadcrumb-item active" aria-current="page">Transfer</li>
                 </ol>
             </nav>
@@ -71,12 +71,11 @@
                     <input type="text" class="form-control border border-2 border-dark w-75" value="0€"/>
                 </div>
                 <div class="col">
-                    <button type="submit" class="btn text-white w-75" style="background-color: #5cb95c">Pay</button>
+                    <button type="submit" class="btn btn-success text-white w-75" style="background-color: #5cb95c">Pay</button>
                 </div>
                 <div class="col-1"></div>
             </div>
         </form>
-
     </div>
     <div class="row w-75 mx-auto mt-3 container px-0">
         <div class="col px-0">
@@ -93,16 +92,16 @@
                     <td>Amount</td>
                 </tr>
                 </thead>
-                <tbody>
-                <tr>
-                    <td>Mark</td>
-                    <td>Otto</td>
-                    <td>@mdo</td>
+                <tbody class="text-secondary">
+                <tr th:if="${transactions.empty}">
+                    <td colspan="3">Aucune transaction n'a été trouvée!</td>
                 </tr>
-                <tr>
-                    <td>Jacob</td>
-                    <td>Thornton</td>
-                    <td>@fat</td>
+                <tr th:each="transaction: ${transactions}">
+                    <div th:if="${transaction.payedUserId != null}">
+                        <td><span th:text="${transaction.payedUserId}"></span></td>
+                        <td><span th:text="${transaction.description}"></span></td>
+                        <td><span th:text="${transaction.amount}"></span></td>
+                    </div>
                 </tr>
                 </tbody>
             </table>
@@ -131,7 +130,5 @@
             </nav>
         </div>
     </div>
-
-
 </body>
 </html>

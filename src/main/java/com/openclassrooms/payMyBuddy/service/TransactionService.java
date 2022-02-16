@@ -11,6 +11,10 @@ public class TransactionService {
     @Autowired
     TransactionRepository transactionRepository;
 
+    public Iterable<Transaction> getTransactions () {
+        return transactionRepository.findAll();
+    }
+
     public Transaction addTransaction (Transaction transaction) {
 
         return transactionRepository.save(transaction);
