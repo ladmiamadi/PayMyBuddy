@@ -1,5 +1,6 @@
 package com.openclassrooms.payMyBuddy.service;
 
+import com.openclassrooms.payMyBuddy.model.Connection;
 import com.openclassrooms.payMyBuddy.model.User;
 import com.openclassrooms.payMyBuddy.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,14 @@ public class UserService {
 
     public User addUser (User user) {
         return userRepository.save(user);
+    }
+
+    public Optional<User> getUserByEmail (String email) {
+        return userRepository.findByEmail(email);
+    }
+
+    public  Optional<User> getConnectionByEmail( String email) {
+        return userRepository.findAddedUsersByEmail(email);
     }
 
     public void deleteUser (User user) {

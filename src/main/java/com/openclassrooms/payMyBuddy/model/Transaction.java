@@ -27,11 +27,17 @@ public class Transaction {
     private String description;
 
     @Column(name = "date_transaction")
-    private Date transactionDate;
+    private String transactionDate;
 
-    @Column(name = "id_utilisateur")
-    private Integer userId;
+    @ManyToOne(
+            cascade = CascadeType.ALL
+    )
+    @JoinColumn(name = "id_utilisateur")
+    private User user;
 
-    @Column(name = "id_utilisateur_paye")
-    private Integer payedUserId;
+    @ManyToOne(
+            cascade = CascadeType.ALL
+    )
+    @JoinColumn(name = "id_utilisateur_paye")
+    private User payedUser;
 }

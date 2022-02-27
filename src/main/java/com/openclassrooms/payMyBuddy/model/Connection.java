@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.Date;
 
 @Entity
 @Table(name = "ajouter_liste")
@@ -16,17 +15,6 @@ public class Connection {
     @Column(name = "id_connection", nullable = false)
     private Integer connectionId;
 
-    /*@ManyToOne(
-            cascade = CascadeType.ALL
-    )
-    @JoinColumn(name="id_utilisateur")
-    private User user;
-
-    @ManyToOne(
-            cascade = CascadeType.ALL
-    )
-    @JoinColumn(name="id_utilisateur_ajoute")
-    private User addedUser;*/
 
     @Column(name = "id_utilisateur")
     private Integer userId;

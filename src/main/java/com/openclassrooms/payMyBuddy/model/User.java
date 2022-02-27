@@ -43,17 +43,15 @@ public class User {
     private String registrationDate;
 
     @OneToMany(
+            mappedBy = "user",
             cascade = CascadeType.ALL,
-            orphanRemoval = true,
-            fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_utilisateur")
+            orphanRemoval = true)
     List<Transaction> transactions = new ArrayList<>();
 
     @OneToMany(
+            mappedBy = "payedUser",
             cascade = CascadeType.ALL,
-            orphanRemoval = true,
-            fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_utilisateur_paye")
+            orphanRemoval = true)
     List<Transaction> paymentTransactions = new ArrayList<>();
 
     @ManyToMany (

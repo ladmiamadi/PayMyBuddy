@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="https://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css"
+          href="webjars/bootstrap/5.1.3/css/bootstrap.min.css"/>
     <title>Home</title>
 </head>
 <body class="container">
@@ -47,28 +48,56 @@
         </div>
     </div>
     <div class="w-75 mx-auto container px-2">
+        <div class="row my-3">
+            <div class="col-5 alert alert-success" role="alert" th:text="${success}" th:if="${success}"></div>
+            <div class="col-5 alert alert-danger" role="alert" th:text="${error}" th:if="${error}"></div>
+        </div>
             <div class="row mt-4">
                 <div class="col-3 px-0">
                     <p>Send Money</p>
                 </div>
                 <div class="col"></div>
                 <div class="col-3 d-flex flex-row-reverse px-0">
-                    <button class="btn btn-primary rounded rounded-3">Add Connection</button>
+                    <button class="btn btn-primary rounded rounded-3"data-bs-toggle="modal" data-bs-target="#connectionModal" data-bs-whatever="@mdo">Add Connection</button>
+                    <div class="modal fade" id="connectionModal" tabindex="-1" aria-labelledby="connectionModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="connectionModalLabel">Add a new connection</h5>
+                                    <button type="button" id= "close" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form id="add-connection">
+                                        <div class="mb-3">
+                                            <label for="email" class="col-form-label">Email:</label>
+                                            <input type="email" class="form-control" id="email">
+                                        </div>
+                                        <div>
+                                            <p id="errors" class="text-danger"></p>
+                                        </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary">Save</button>
+                                </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        <form class="px-0 mx-0">
+        <form class="px-0 mx-0" th:action="@{/home/payment}" method="post" th:object="${transactions}">
             <div class="row bg-light p-5 d-flex flex-between">
                 <div class="col-1"></div>
                 <div class="col">
-                    <select class="form-select border border-dark border-2" aria-label="Default select example">
+                    <select id="connection" name="connection" class="form-select border border-dark border-2" aria-label="Select a connection">
                         <option selected>Select a Connection</option>
-                        <option value="1">One</option>
-                        <option value="2">Two</option>
-                        <option value="3">Three</option>
+                        <div th:each="user: ${addedUsers}">
+                            <option th:value="${user.id}"><span th:text="${user.firstName}"></span></option>
+                        </div>
                     </select>
                 </div>
                 <div class="col d-flex justify-content-center">
-                    <input type="text" class="form-control border border-2 border-dark w-75" value="0€"/>
+                    <input type="text" id="amount" name="amount" class="form-control border border-2 border-dark w-75" value="0€"/>
                 </div>
                 <div class="col">
                     <button type="submit" class="btn btn-success text-white w-75" style="background-color: #5cb95c">Pay</button>
@@ -77,6 +106,7 @@
             </div>
         </form>
     </div>
+
     <div class="row w-75 mx-auto mt-3 container px-0">
         <div class="col px-0">
             <p>My Transactions</p>
@@ -97,8 +127,8 @@
                     <td colspan="3">Aucune transaction n'a été trouvée!</td>
                 </tr>
                 <tr th:each="transaction: ${transactions}">
-                    <div th:if="${transaction.payedUserId != null}">
-                        <td><span th:text="${transaction.payedUserId}"></span></td>
+                    <div th:if="${transaction.payedUser != null}">
+                        <td><span th:text="${transaction.payedUser.firstName}"></span></td>
                         <td><span th:text="${transaction.description}"></span></td>
                         <td><span th:text="${transaction.amount}"></span></td>
                     </div>
@@ -130,5 +160,10 @@
             </nav>
         </div>
     </div>
+<script type="text/javascript" src="webjars/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript"
+            src="webjars/jquery/3.6.0/jquery.min.js"></script>
+
+    <script type="text/javascript" src="/static/js/modal.js" th:src="@{/js/modal.js}"></script>
 </body>
 </html>
