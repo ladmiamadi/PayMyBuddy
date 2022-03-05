@@ -1,10 +1,147 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns:th="http://www.thymeleaf.org" >
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <link rel="stylesheet" type="text/css"
+          href="webjars/bootstrap/5.1.3/css/bootstrap.min.css"/>
+    <title>Home</title>
 </head>
-<body>
+<body class="container">
+<div class="row mt-1 text-dark" style="font-size: 18px">
+    <div class="col-6 px-0">
+        <h4 class="d-inline-block px-4 py-2 bg-gradient text-center text-white rounded rounded-4 mt-2" style="background-color: #76bf51">Pay My Buddy</h4>
+    </div>
+    <div class="col px-0">
+        <nav class="navbar navbar-expand-lg navbar-light text-secondary">
+            <div class="container-fluid px-0">
+                <div class="collapse navbar-collapse d-flex justify-content-end" id="navbarNav">
+                    <ul class="navbar-nav">
+                        <li class="nav-item mx-3">
+                            <a class="nav-link" aria-current="page" th:href="@{/home}">Home</a>
+                        </li>
+                        <li class="nav-item mx-3">
+                            <a class="nav-link active" th:href="@{/transfer}">Transfer</a>
+                        </li>
+                        <li class="nav-item mx-3">
+                            <a class="nav-link" th:href="@{/profile}">Profile</a>
+                        </li>
+                        <li class="nav-item mx-3">
+                            <a class="nav-link" th:href="@{/contact}">Contact</a>
+                        </li>
+                        <li class="nav-item mx-3">
+                            <a class="nav-link" th:href="@{/logOff}">Log Off</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </div>
+</div>
+<div class="row">
+    <div class="col bg-light">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a th:href="@{/home}">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Transfer</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+<div class="w-75 mx-auto container px-2">
+    <div class="row my-3">
+        <div class="col-5 alert alert-success" role="alert" th:text="${success}" th:if="${success}"></div>
+        <div class="col-5 alert alert-danger" role="alert" th:text="${error}" th:if="${error}"></div>
+    </div>
+    <div class="row mt-4">
+        <div class="col-3 px-0">
+            <p>Transfer Money</p>
+        </div>
+        <div class="col"></div>
+        <div class="col-3 d-flex flex-row-reverse px-0">
 
+        </div>
+        <form class="px-0 mx-0" th:action="@{/transfer}" method="post">
+                <div class="row bg-light p-3 d-flex flex-between">
+                    <div class="col-3"></div>
+                    <div class="col">Bank balance: <span th:text="${user.bankAccountBalance}" style="font-weight: bold;"></span>€</div>
+                    <div class="col">Account balance: <span th:text="${user.balance}" style="font-weight: bold;"></span>€</div>
+                    <div class="col-3"></div>
+                </div>
+            <div class="row bg-light p-3 d-flex flex-between">
+                <div class="col-1"></div>
+                <div class="col d-flex justify-content-center">
+                    <input type="text" id="amount" name="amount" class="form-control border border-2 border-dark w-75" placeholder="0€"/>
+                </div>
+                <div class="col">
+                    <select class="form-select border border-dark border-2" aria-label="Select a transaction type" id="type" name="type">
+                        <option>Select a transaction type</option>
+                        <option value="transfer">Transfer</option>
+                        <option value="receive">Receive</option>
+                    </select>
+                </div>
+                <div class="col-2">
+                    <button type="submit" class="btn btn-primary text-white w-75">Submit</button>
+                </div>
+                <div class="col-1"></div>
+            </div>
+        </form>
+    </div>
+
+    <div class="row w-75 mx-auto mt-3 container px-0">
+        <div class="col px-0">
+            <p>My Transactions</p>
+        </div>
+    </div>
+    <div class="row w-75 mx-auto container px-0">
+        <div class="col px-0 border border-3 border-dark">
+            <table class="table table-striped table-hover border-none border-style-none mb-0 text-center">
+                <thead class="text-white" style="background-color: #5cb95c">
+                <tr style="height: 100px ; vertical-align: middle; font-size: 18px">
+                    <td>Date</td>
+                    <td>Type</td>
+                    <td>Amount</td>
+                </tr>
+                </thead>
+                <tbody class="text-secondary">
+                <tr th:if="${transactions.empty}">
+                    <td colspan="3">No transaction was found!</td>
+                </tr>
+                <tr th:each="transaction: ${transactions}">
+                    <div th:if="${transaction.type != 'payment'}">
+                        <td><span th:text="${transaction.transactionDate}"></span></td>
+                        <td><span th:text="${transaction.type}"></span></td>
+                        <td><span th:text="${transaction.amount}"></span></td>
+                    </div>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row w-50 mx-auto mt-3 container px-0">
+        <div class="col">
+            <nav aria-label="Page navigation example">
+                <ul class="pagination pagination-lg d-flex justify-content-center">
+                    <li class="page-item">
+                        <a class="page-link" href="#" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item"><a class="page-link" href="#">4</a></li>
+                    <li class="page-item"><a class="page-link" href="#">5</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="#" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+    <script type="text/javascript" src="webjars/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript"
+            src="webjars/jquery/3.6.0/jquery.min.js"></script>
 </body>
 </html>

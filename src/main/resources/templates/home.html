@@ -1,5 +1,5 @@
-<!DOCTYPE html>
-<html xmlns:th="https://www.thymeleaf.org">
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns:th="http://www.thymeleaf.org" >
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css"
@@ -20,7 +20,7 @@
                                 <a class="nav-link active" aria-current="page" th:href="@{/home}">Home</a>
                             </li>
                             <li class="nav-item mx-3">
-                                <a class="nav-link" th:href="@{/transfert}">Transfer</a>
+                                <a class="nav-link" th:href="@{/transfer}">Transfer</a>
                             </li>
                             <li class="nav-item mx-3">
                                 <a class="nav-link" th:href="@{/profile}">Profile</a>
@@ -85,19 +85,19 @@
                     </div>
                 </div>
             </div>
-        <form class="px-0 mx-0" th:action="@{/home/payment}" method="post" th:object="${transactions}">
+        <form class="px-0 mx-0" th:action="@{/home}" method="post">
             <div class="row bg-light p-5 d-flex flex-between">
                 <div class="col-1"></div>
                 <div class="col">
                     <select id="connection" name="connection" class="form-select border border-dark border-2" aria-label="Select a connection">
-                        <option selected>Select a Connection</option>
+                        <option selected value="0">Select a Connection</option>
                         <div th:each="user: ${addedUsers}">
                             <option th:value="${user.id}"><span th:text="${user.firstName}"></span></option>
                         </div>
                     </select>
                 </div>
                 <div class="col d-flex justify-content-center">
-                    <input type="text" id="amount" name="amount" class="form-control border border-2 border-dark w-75" value="0€"/>
+                    <input type="text" id="amount" name="amount" class="form-control border border-2 border-dark w-75" placeholder="0€"/>
                 </div>
                 <div class="col">
                     <button type="submit" class="btn btn-success text-white w-75" style="background-color: #5cb95c">Pay</button>
@@ -106,7 +106,6 @@
             </div>
         </form>
     </div>
-
     <div class="row w-75 mx-auto mt-3 container px-0">
         <div class="col px-0">
             <p>My Transactions</p>
@@ -124,10 +123,10 @@
                 </thead>
                 <tbody class="text-secondary">
                 <tr th:if="${transactions.empty}">
-                    <td colspan="3">Aucune transaction n'a été trouvée!</td>
+                    <td colspan="3">No transaction was found!</td>
                 </tr>
                 <tr th:each="transaction: ${transactions}">
-                    <div th:if="${transaction.payedUser != null}">
+                    <div th:if="${transaction.type == 'payment'}">
                         <td><span th:text="${transaction.payedUser.firstName}"></span></td>
                         <td><span th:text="${transaction.description}"></span></td>
                         <td><span th:text="${transaction.amount}"></span></td>

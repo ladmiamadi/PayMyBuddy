@@ -7,18 +7,15 @@ import com.openclassrooms.payMyBuddy.service.TransactionService;
 import com.openclassrooms.payMyBuddy.service.UserService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.web.servlet.view.RedirectView;
 
 import java.math.BigDecimal;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Log4j2
 @Controller
@@ -34,8 +31,9 @@ public class HomeController {
 
     @GetMapping("/home")
     public String getTransactions (Model model) {
-        List<Transaction> transactions = userService.getUserById(1).get().getTransactions();
-        List<User> addedUsers = userService.getUserById(1).get().getAddedUsers();
+        User currentUser = userService.getUserById(1).get();
+        List<Transaction> transactions = currentUser.getTransactions();
+        List<User> addedUsers = currentUser.getAddedUsers();
 
         model.addAttribute("transactions", transactions);
         model.addAttribute("addedUsers", addedUsers);
@@ -43,26 +41,24 @@ public class HomeController {
         return "home";
     }
 
-    @PostMapping("/home/payment")
-    public RedirectView handleForm(@RequestParam("connection") Integer connection,
-                                   @RequestParam("amount") Integer amount, RedirectAttributes redirectAttributes) {
+    @PostMapping("/home")
+    public String handleForm(@RequestParam("connection") Integer connection,
+                             @RequestParam(value = "amount") BigDecimal amount, RedirectAttributes redirectAttributes) {
+        User currentUser = userService.getUserById(1).get();
 
-        Transaction transaction = new Transaction();
-        transaction.setUser(userService.getUserById(1).get());
+        if (currentUser.getBalance().subtract(amount).compareTo(BigDecimal.valueOf(0)) < 0) {
+            redirectAttributes.addFlashAttribute("error", "Your balance is insufficient!");
+        }else if(connection == 0){
+            redirectAttributes.addFlashAttribute("error", "Select a connection first");
+        }else {
+            transactionService.createNewTransaction(currentUser, amount, userService.getUserById(connection).get(), "payment");
+            // update user balance
+            currentUser.setBalance(currentUser.getBalance().subtract(amount));
+            userService.updateUser(currentUser);
 
-        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-        Date date = new Date();
-
-        transaction.setTransactionDate(dateFormat.format(date));
-        transaction.setAmount(BigDecimal.valueOf(amount));
-        transaction.setType("payment");
-
-        transaction.setPayedUser(userService.getUserById(connection).get());
-
-        transactionService.addTransaction(transaction);
-
-        redirectAttributes.addFlashAttribute("success", "successfully payed");
-        return new RedirectView("/home");
+            redirectAttributes.addFlashAttribute("success", "successfully payed");
+        }
+        return "redirect:/home";
     }
 
 

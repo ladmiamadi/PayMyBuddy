@@ -33,6 +33,10 @@ public class UserService {
         return userRepository.findAddedUsersByEmail(email);
     }
 
+    public User updateUser(User user){
+        return userRepository.save(user);
+    }
+
     public void deleteUser (User user) {
         userRepository.delete(user);
     }
