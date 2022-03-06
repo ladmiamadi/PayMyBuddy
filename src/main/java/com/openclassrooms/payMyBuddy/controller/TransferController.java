@@ -5,9 +5,11 @@ import com.openclassrooms.payMyBuddy.model.User;
 import com.openclassrooms.payMyBuddy.service.TransactionService;
 import com.openclassrooms.payMyBuddy.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -24,15 +26,27 @@ public class TransferController {
     @Autowired
     TransactionService transactionService;
 
-    @GetMapping("/transfer")
-    public String getTransactions (Model model) {
+    @GetMapping("/transfer/{pageNumber}")
+    public String getOnePage (Model model, @PathVariable("pageNumber") int currentPage) {
         User currentUser = userService.getUserById(1).get();
-        List<Transaction> transactions = currentUser.getTransactions();
+        Page<Transaction> page = transactionService.findPage(currentUser, "transfer", "receive", currentPage);
 
+        int totalPages = page.getTotalPages();
+        long totalItems = page.getTotalElements();
+        List<Transaction> transactions = page.getContent();
+
+        model.addAttribute("currentPage", currentPage);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("totalItems", totalItems);
         model.addAttribute("transactions", transactions);
         model.addAttribute("user", currentUser);
 
-        return "transfert";
+        return "transfer";
+    }
+
+    @GetMapping("/transfer")
+    public String getAllPages(Model model){
+        return getOnePage(model, 1);
     }
 
     @PostMapping("/transfer")

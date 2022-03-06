@@ -2,20 +2,19 @@ package com.openclassrooms.payMyBuddy.controller;
 
 import com.openclassrooms.payMyBuddy.model.Transaction;
 import com.openclassrooms.payMyBuddy.model.User;
+import com.openclassrooms.payMyBuddy.repository.TransactionRepository;
 import com.openclassrooms.payMyBuddy.service.ConnectionService;
 import com.openclassrooms.payMyBuddy.service.TransactionService;
 import com.openclassrooms.payMyBuddy.service.UserService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Objects;
 
 @Log4j2
 @Controller
@@ -29,16 +28,31 @@ public class HomeController {
     @Autowired
     TransactionService transactionService;
 
-    @GetMapping("/home")
-    public String getTransactions (Model model) {
+    @Autowired
+    TransactionRepository transactionRepository;
+
+    @GetMapping("/home/{pageNumber}")
+    public String getOnePage (Model model, @PathVariable("pageNumber") int currentPage) {
         User currentUser = userService.getUserById(1).get();
-        List<Transaction> transactions = currentUser.getTransactions();
+        Page<Transaction> page = transactionService.findPage(currentUser, "payment","", currentPage);
+        int totalPages = page.getTotalPages();
+        long totalItems = page.getTotalElements();
+        List<Transaction> transactions = page.getContent();
+        // send data to view
         List<User> addedUsers = currentUser.getAddedUsers();
 
+        model.addAttribute("currentPage", currentPage);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("totalItems", totalItems);
         model.addAttribute("transactions", transactions);
         model.addAttribute("addedUsers", addedUsers);
 
         return "home";
+    }
+
+    @GetMapping("/home")
+    public String getAllPages(Model model){
+        return getOnePage(model, 1);
     }
 
     @PostMapping("/home")
