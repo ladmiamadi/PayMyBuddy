@@ -85,19 +85,23 @@
                     </div>
                 </div>
             </div>
-        <form class="px-0 mx-0" th:action="@{/home}" method="post">
+        <form class="px-0 mx-0" action="#" th:action="@{/home}" method="post" th:object="${transaction}">
             <div class="row bg-light p-5 d-flex flex-between">
                 <div class="col-1"></div>
                 <div class="col">
-                    <select id="connection" name="connection" class="form-select border border-dark border-2" aria-label="Select a connection">
-                        <option selected value="0">Select a Connection</option>
+                    <select id="connection" name="connection" class="form-select border border-dark border-2" aria-label="Select a connection"
+                            th:field="*{payedUser}">
+                        <option selected value="0">Select a connection</option>
+
                         <div th:each="user: ${addedUsers}">
-                            <option th:value="${user.id}"><span th:text="${user.firstName}"></span></option>
+                            <option th:value="${user.getId()}"><span th:text="${user.firstName}"></span></option>
                         </div>
                     </select>
+                    <div class="text-danger p-1" th:if="${#fields.hasErrors('payedUser')}" th:text="${error}"th:errors="*{payedUser}"></div>
                 </div>
-                <div class="col d-flex justify-content-center">
-                    <input type="text" id="amount" name="amount" class="form-control border border-2 border-dark w-75" placeholder="0€"/>
+                <div class="col ">
+                    <input type="text" id="amount" name="amount" th:field="*{amount}" class="form-control border border-2 border-dark w-75" placeholder="0€"/>
+                    <div class="text-danger p-1" th:if="${#fields.hasErrors('amount')}" th:text="${error}"th:errors="*{amount}"></div>
                 </div>
                 <div class="col">
                     <button type="submit" class="btn btn-success text-white w-75" style="background-color: #5cb95c">Pay</button>

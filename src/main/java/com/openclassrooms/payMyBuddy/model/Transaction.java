@@ -1,22 +1,27 @@
 package com.openclassrooms.payMyBuddy.model;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
-import javax.validation.constraints.DecimalMin;
-import javax.validation.constraints.Digits;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+import javax.validation.Valid;
+import javax.validation.constraints.*;
 import java.math.BigDecimal;
 
 @Entity
 @Table(name = "transaction")
-@Data
+@Getter
+@Setter
 public class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_transaction", nullable = false)
     private Integer transactionId;
 
+    @Min(value = 1, message = "The amount must be greater than 0€")
+    @NotNull(message = "Amount can't be null")
+    @Digits(integer=3, fraction=2, message = "Invalid amount")
     @Column(name = "montant")
     private BigDecimal amount;
 
@@ -39,5 +44,6 @@ public class Transaction {
             cascade = CascadeType.ALL
     )
     @JoinColumn(name = "id_utilisateur_paye")
+    @NotNull(message = "Invalid connection")
     private User payedUser;
 }

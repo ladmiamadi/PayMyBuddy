@@ -11,14 +11,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.util.List;
 
 @Log4j2
 @Controller
-public class HomeController {
+public class HomeController implements WebMvcConfigurer {
     @Autowired
     UserService userService;
 
@@ -40,11 +43,12 @@ public class HomeController {
         List<Transaction> transactions = page.getContent();
         // send data to view
         List<User> addedUsers = currentUser.getAddedUsers();
-
+        Transaction transaction = new Transaction();
         model.addAttribute("currentPage", currentPage);
         model.addAttribute("totalPages", totalPages);
         model.addAttribute("totalItems", totalItems);
         model.addAttribute("transactions", transactions);
+        model.addAttribute("transaction", transaction);
         model.addAttribute("addedUsers", addedUsers);
 
         return "home";
@@ -56,18 +60,31 @@ public class HomeController {
     }
 
     @PostMapping("/home")
-    public String handleForm(@RequestParam("connection") Integer connection,
-                             @RequestParam(value = "amount") BigDecimal amount, RedirectAttributes redirectAttributes) {
+    public String handleForm(@Valid Transaction transaction,
+                             BindingResult bindingResult,
+                             RedirectAttributes redirectAttributes, Model model) {
         User currentUser = userService.getUserById(1).get();
 
-        if (currentUser.getBalance().subtract(amount).compareTo(BigDecimal.valueOf(0)) < 0) {
+        if (bindingResult.hasErrors()) {
+            Page<Transaction> page = transactionService.findPage(currentUser, "payment","", 1);
+            int totalPages = page.getTotalPages();
+            long totalItems = page.getTotalElements();
+
+            model.addAttribute("currentPage", 1);
+            model.addAttribute("totalPages", totalPages);
+            model.addAttribute("totalItems", totalItems);
+            model.addAttribute("transactions", page.getContent());
+            model.addAttribute("transaction", transaction);
+            model.addAttribute("addedUsers", currentUser.getAddedUsers());
+            return "home";
+        }
+
+        if (currentUser.getBalance().subtract(transaction.getAmount()).compareTo(BigDecimal.valueOf(0)) < 0) {
             redirectAttributes.addFlashAttribute("error", "Your balance is insufficient!");
-        }else if(connection == 0){
-            redirectAttributes.addFlashAttribute("error", "Select a connection first");
-        }else {
-            transactionService.createNewTransaction(currentUser, amount, userService.getUserById(connection).get(), "payment");
+        } else {
+            transactionService.createNewTransaction(currentUser, transaction.getAmount(), userService.getUserById(transaction.getPayedUser().getId()).get(), "payment");
             // update user balance
-            currentUser.setBalance(currentUser.getBalance().subtract(amount));
+            currentUser.setBalance(currentUser.getBalance().subtract(transaction.getAmount()));
             userService.updateUser(currentUser);
 
             redirectAttributes.addFlashAttribute("success", "successfully payed");
