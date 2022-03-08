@@ -89,6 +89,7 @@
             <div class="row bg-light p-5 d-flex flex-between">
                 <div class="col-1"></div>
                 <div class="col">
+                    <input class="d-none" th:field="*{type}" th:value="'payment'"/>
                     <select id="connection" name="connection" class="form-select border border-dark border-2" aria-label="Select a connection"
                             th:field="*{payedUser}">
                         <option selected value="0">Select a connection</option>

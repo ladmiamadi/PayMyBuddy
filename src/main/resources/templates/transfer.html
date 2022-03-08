@@ -60,7 +60,7 @@
         <div class="col-3 d-flex flex-row-reverse px-0">
 
         </div>
-        <form class="px-0 mx-0" th:action="@{/transfer}" method="post">
+        <form class="px-0 mx-0" th:action="@{/transfer}" method="post" th:object="${transaction}">
                 <div class="row bg-light p-3 d-flex flex-between">
                     <div class="col-3"></div>
                     <div class="col">Bank balance: <span th:text="${user.bankAccountBalance}" style="font-weight: bold;"></span>€</div>
@@ -69,15 +69,19 @@
                 </div>
             <div class="row bg-light p-3 d-flex flex-between">
                 <div class="col-1"></div>
-                <div class="col d-flex justify-content-center">
-                    <input type="text" id="amount" name="amount" class="form-control border border-2 border-dark w-75" placeholder="0€"/>
+                <div class="col">
+                    <input type="text" id="amount" name="amount" class="form-control border border-2 border-dark w-75" placeholder="0€"
+                        th:field="*{amount}"/>
+                    <div class="text-danger p-1" th:if="${#fields.hasErrors('amount')}" th:text="${error}"th:errors="*{amount}"></div>
                 </div>
                 <div class="col">
-                    <select class="form-select border border-dark border-2" aria-label="Select a transaction type" id="type" name="type">
-                        <option>Select a transaction type</option>
+                    <select class="form-select border border-dark border-2" aria-label="Select a transaction type" id="type"
+                            name="type" th:field="*{type}">
+                        <option value="0" selected>Select a transaction type</option>
                         <option value="transfer">Transfer</option>
                         <option value="receive">Receive</option>
                     </select>
+                    <div class="text-danger p-1" th:if="${#fields.hasErrors('type')}" th:text="${error}"th:errors="*{type}"></div>
                 </div>
                 <div class="col-2">
                     <button type="submit" class="btn btn-primary text-white w-75">Submit</button>

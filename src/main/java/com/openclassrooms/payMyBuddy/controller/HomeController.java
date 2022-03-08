@@ -76,7 +76,13 @@ public class HomeController implements WebMvcConfigurer {
             model.addAttribute("transactions", page.getContent());
             model.addAttribute("transaction", transaction);
             model.addAttribute("addedUsers", currentUser.getAddedUsers());
+
             return "home";
+        }
+
+        if(transaction.getPayedUser() == null) {
+            redirectAttributes.addFlashAttribute("error", "Select a valid connection!");
+            return "redirect:/home";
         }
 
         if (currentUser.getBalance().subtract(transaction.getAmount()).compareTo(BigDecimal.valueOf(0)) < 0) {

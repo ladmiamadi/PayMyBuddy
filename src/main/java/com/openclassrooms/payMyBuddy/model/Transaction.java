@@ -1,11 +1,8 @@
 package com.openclassrooms.payMyBuddy.model;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-
 import javax.persistence.*;
-import javax.validation.Valid;
 import javax.validation.constraints.*;
 import java.math.BigDecimal;
 
@@ -25,6 +22,8 @@ public class Transaction {
     @Column(name = "montant")
     private BigDecimal amount;
 
+    @NotNull
+    @Pattern(regexp="^[A-Za-z]*$",message = "Select a valid type")
     @Column(name = "type")
     private String type;
 
@@ -44,6 +43,5 @@ public class Transaction {
             cascade = CascadeType.ALL
     )
     @JoinColumn(name = "id_utilisateur_paye")
-    @NotNull(message = "Invalid connection")
     private User payedUser;
 }
