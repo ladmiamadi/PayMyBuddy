@@ -4,6 +4,9 @@ import lombok.Getter;
 import lombok.Setter;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,23 +21,28 @@ public class User {
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    @Column(name = "email")
+    @Column(name = "email", unique = true)
+    @NotEmpty(message = "Email can't be empty")
     @Email(message = "Invalid email format")
     private String email;
 
     @Column(name = "mot_de_passe")
+    @NotEmpty(message = "Password can not be empty")
     private String password;
 
     @Column(name = "prenom")
+    @NotEmpty(message = "First Name can not be empty")
     private String firstName;
 
     @Column(name = "nom")
+    @NotEmpty(message = "Last Name can not be empty")
     private String lastName;
 
     @Column(name = "solde")
     private BigDecimal balance;
 
     @Column(name = "compte_bancaire")
+    @NotEmpty(message = "Bank Account can not be empty")
     private String bankAccount;
 
     @Column(name = "solde_compte_bancaire")

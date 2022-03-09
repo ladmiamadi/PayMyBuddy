@@ -13,29 +13,38 @@
         <h4 class="d-block px-4 py-3 bg-gradient text-center text-white mx-auto w-50 mb-5 rounded rounded-4" style="background-color: #76bf51">Pay My Buddy</h4>
         <div class="alert-primary p-3 mb-4 text-center">Create your account to send money easily and fastly</div>
 
+        <div class="alert alert-success p-3 mb-4" role="alert" th:text="${success}" th:if="${success}"></div>
+        <div class="alert alert-danger p-3 mb-4" role="alert" th:text="${error}" th:if="${error}"></div>
+
         <div class="form-floating mb-4">
-            <input type="email" class="form-control" id="firstname" name="firstname" placeholder="First Name" th:field="*{firstName}"/>
+            <input type="text" class="form-control" id="firstname" name="firstname" placeholder="First Name" th:field="*{firstName}"/>
             <label for="username">First Name</label>
+            <div class="text-danger p-1" th:if="${#fields.hasErrors('firstName')}" th:text="${error}"th:errors="*{firstName}"></div>
         </div>
         <div class="form-floating mb-4">
             <input type="text" class="form-control" id="lastname" name="lastname" placeholder="Last Name" th:field="*{lastName}" />
             <label for="lastname">Last Name</label>
+            <div class="text-danger p-1" th:if="${#fields.hasErrors('lastName')}" th:text="${error}"th:errors="*{lastName}"></div>
         </div>
         <div class="form-floating mb-4">
             <input type="email" class="form-control" id="username" name="username" placeholder="name@example.com" th:field="*{email}"/>
             <label for="firstname">Email</label>
+            <div class="text-danger p-1" th:if="${#fields.hasErrors('email')}" th:text="${error}"th:errors="*{email}"></div>
         </div>
         <div class="form-floating mb-4">
             <input type="password" class="form-control" id="password" name="password" placeholder="Password" th:field="*{password}"/>
             <label for="password">Password</label>
+            <div class="text-danger p-1" th:if="${#fields.hasErrors('password')}" th:text="${error}"th:errors="*{password}"></div>
         </div>
         <div class="form-floating mb-4">
             <input type="password" class="form-control" id="confirm-password" name="confirm-password" placeholder="Confirm Password" />
             <label for="confirm-password">Confirm Password</label>
+            <div class="text-danger p-1" th:if="${#fields.hasErrors('password')}" th:text="${error}"th:errors="*{password}"></div>
         </div>
         <div class="form-floating mb-4">
             <input type="text" class="form-control" id="bank-account" name="bank-account" placeholder="Bank Account Number" th:field="*{bankAccount}" />
             <label for="bank-account">Bank Account Number</label>
+            <div class="text-danger p-1" th:if="${#fields.hasErrors('bankAccount')}" th:text="${error}"th:errors="*{bankAccount}"></div>
         </div>
         <div class="mt-5 w-75 mx-auto">
             <button type="submit" class="btn btn-primary px-5 mx-auto d-block rounded rounded-3">Create your account</button>

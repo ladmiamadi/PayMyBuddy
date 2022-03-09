@@ -1,9 +1,9 @@
 package com.openclassrooms.payMyBuddy.service;
 
-import com.openclassrooms.payMyBuddy.model.Connection;
 import com.openclassrooms.payMyBuddy.model.User;
 import com.openclassrooms.payMyBuddy.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -13,6 +13,9 @@ public class UserService {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    PasswordEncoder passwordEncoder;
+
     public Iterable<User> getUsers () {
         return userRepository.findAll();
     }
@@ -21,8 +24,8 @@ public class UserService {
         return userRepository.findById(id);
     }
 
-    public User addUser (User user) {
-        return userRepository.save(user);
+    public void addUser (User user) {
+        userRepository.save(user);
     }
 
     public Optional<User> getUserByEmail (String email) {
@@ -33,8 +36,8 @@ public class UserService {
         return userRepository.findAddedUsersByEmail(email);
     }
 
-    public User updateUser(User user){
-        return userRepository.save(user);
+    public void updateUser(User user){
+        userRepository.save(user);
     }
 
     public void deleteUser (User user) {
@@ -44,4 +47,13 @@ public class UserService {
     public void deleteUserById (Integer id) {
         userRepository.deleteById(id);
     }
+
+    public boolean checkIfUserExist(String email) {
+        return userRepository.findByEmail(email).isPresent();
+    }
+
+    public void encodePassword(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+    }
+
 }
