@@ -3,9 +3,13 @@ package com.openclassrooms.payMyBuddy.service;
 import com.openclassrooms.payMyBuddy.model.User;
 import com.openclassrooms.payMyBuddy.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 @Service
@@ -54,6 +58,22 @@ public class UserService {
 
     public void encodePassword(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+    }
+
+    public User currentUser () {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(!(authentication instanceof AnonymousAuthenticationToken)) {
+            return getUserByEmail(authentication.getName()).get();
+        }
+        return null;
+    }
+
+    public void registerUser(User user) {
+        user.setBalance(BigDecimal.valueOf(0));
+        user.setBankAccountBalance(HelperService.randomBalance());
+        user.setRegistrationDate(HelperService.formattingNewDate());
+        encodePassword(user);
+        addUser(user);
     }
 
 }

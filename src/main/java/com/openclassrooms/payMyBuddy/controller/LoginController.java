@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
-import java.math.BigDecimal;
 
 @Controller
 public class LoginController {
@@ -44,11 +43,7 @@ public class LoginController {
             model.addAttribute("user", user);
             return "register";
         } else {
-            user.setBalance(BigDecimal.valueOf(0));
-            user.setBankAccountBalance(HelperService.randomBalance());
-            user.setRegistrationDate(HelperService.formattingNewDate());
-            userService.encodePassword(user);
-            userService.addUser(user);
+            userService.registerUser(user);
         }
             return "redirect:/login";
     }

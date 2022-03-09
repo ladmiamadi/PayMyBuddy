@@ -1,5 +1,9 @@
+
+
 $(document).ready(function () {
+
     $("#add-connection").submit(function (event) {
+
         event.preventDefault();
 
         ajaxModal();

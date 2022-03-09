@@ -2,6 +2,8 @@
 <html xmlns:th="http://www.thymeleaf.org" >
 <head>
     <meta charset="UTF-8">
+    <meta name="_csrf" content="${_csrf.token}"/>
+    <meta name="_csrf_header" content="${_csrf.headerName}"/>
     <link rel="stylesheet" type="text/css"
           th:href="@{/webjars/bootstrap/5.1.3/css/bootstrap.min.css}"/>
     <title>Home</title>
@@ -150,8 +152,8 @@
                         <span class="page-link" th:unless="${currentPage > 1}">&laquo;</span>
                     </li>
                     <span th:each="i: ${#numbers.sequence(1, totalPages)}"><li class="page-item">
-        <a class="page-link" th:if="${i != currentPage}" th:href="@{'/home/' + ${i}}">[[${i}]]</a>
-        <span class="page-link" th:unless="${i != currentPage}" style="color: black">[[${i}]]</span>
+        <a class="page-link" th:if="${i != currentPage && i != 0}" th:href="@{'/home/' + ${i}}">[[${i}]]</a>
+        <span class="page-link" th:unless="${i != currentPage }" style="color: black">[[${i}]]</span>
         </li></span>
                     <li class="page-item">
                         <a class="page-link" th:if="${currentPage < totalPages}" th:href="@{'/home/' + ${currentPage + 1}}" aria-label="Next">
@@ -167,6 +169,6 @@
         <script type="text/javascript"
                 th:src="@{/webjars/jquery/3.6.0/jquery.min.js}"></script>
 
-    <script type="text/javascript" src="/static/js/modal.js" th:src="@{/js/modal.js}"></script>
+    <script type="text/javascript" src="/js/modal.js" th:src="@{/js/modal.js}"></script>
 </body>
 </html>

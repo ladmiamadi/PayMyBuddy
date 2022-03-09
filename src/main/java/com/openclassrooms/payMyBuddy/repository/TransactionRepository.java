@@ -9,5 +9,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface TransactionRepository extends JpaRepository<Transaction, Integer> {
-    Page<Transaction> findAllByUserAndTypeOrType(User user, String Type1, String type2, Pageable pageable);
+    Page<Transaction> findTransactionsByUserAndType(User user, String type, Pageable pageable);
+
+    Page<Transaction> findTransactionsByUserAndPayedUserEquals(User user, User payedUser, Pageable pageable);
 }

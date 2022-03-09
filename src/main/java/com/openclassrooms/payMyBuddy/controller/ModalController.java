@@ -3,6 +3,7 @@ package com.openclassrooms.payMyBuddy.controller;
 import com.openclassrooms.payMyBuddy.model.Connection;
 import com.openclassrooms.payMyBuddy.model.User;
 import com.openclassrooms.payMyBuddy.service.ConnectionService;
+import com.openclassrooms.payMyBuddy.service.HelperService;
 import com.openclassrooms.payMyBuddy.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,9 +15,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -41,26 +39,18 @@ public class ModalController {
 
             return ResponseEntity.badRequest().body(result);
         }
-
+        User currentUser = userService.currentUser();
         email = email.replace("\"", "");
-
         Optional<User> user = userService.getUserByEmail(email);
 
         if(user.isPresent()) {
-            if(userService.getConnectionByEmail(email).isPresent()) {
+            if(currentUser.getAddedUsers().contains(user)) {
                 result.put("error", "Connection already exist in your list");
                 return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
             }
-            Connection connection = new Connection();
-            connection.setUserId(1);
-            connection.setAddedUserId(user.get().getId());
 
-            DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-            Date date = new Date();
-
-            connection.setDateAdded(dateFormat.format(date));
-            connectionService.addConnection(connection);
-            result.put("success", "Successfully added connection");
+            connectionService.createNewConnection(currentUser, user.get());
+            result.put("success", "Connection was successfully added");
         } else {
             result.put("error", "Email not found in our database");
             return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);

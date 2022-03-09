@@ -11,11 +11,15 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 @Service
 public class TransactionService {
     @Autowired
     TransactionRepository transactionRepository;
+
+    @Autowired
+    UserService userService;
 
     public Iterable<Transaction> getTransactions () {
         return transactionRepository.findAll();
@@ -26,9 +30,14 @@ public class TransactionService {
         return transactionRepository.save(transaction);
     }
 
-    public Page<Transaction> findPage(User user, String type1, String type2, int pageNumber) {
+    public Page<Transaction> findHomePage(User user, String type, int pageNumber) {
         Pageable pageable = PageRequest.of(pageNumber -1,5, Sort.by("transactionDate").descending());
-        return transactionRepository.findAllByUserAndTypeOrType(user, type1, type2, pageable);
+        return transactionRepository.findTransactionsByUserAndType(user, type, pageable);
+    }
+
+    public Page<Transaction> findTransferPage(User user, int pageNumber) {
+        Pageable pageable = PageRequest.of(pageNumber -1,5, Sort.by("transactionDate").descending());
+        return transactionRepository.findTransactionsByUserAndPayedUserEquals(user, null, pageable);
     }
 
     public void deleteTransaction (Transaction transaction) {
@@ -48,5 +57,29 @@ public class TransactionService {
         transaction.setTransactionDate(HelperService.formattingNewDate());
 
         transactionRepository.save(transaction);
+    }
+
+    public void payUser(User currentUser, Transaction transaction) {
+        User payedUser = transaction.getPayedUser();
+        createNewTransaction(currentUser, transaction.getAmount(), payedUser, "payment");
+        currentUser.setBalance(currentUser.getBalance().subtract(transaction.getAmount()));
+        payedUser.setBalance(payedUser.getBalance().add(transaction.getAmount()));
+        userService.updateUser(payedUser);
+        userService.updateUser(currentUser);
+    }
+
+    public void transferMoney(User currentUser, Transaction transaction, String type) {
+        if(Objects.equals(type, "transfer")) {
+            currentUser.setBalance(currentUser.getBalance().subtract(transaction.getAmount()));
+            currentUser.setBankAccountBalance(currentUser.getBankAccountBalance().add(transaction.getAmount()));
+            userService.updateUser(currentUser);
+            createNewTransaction(currentUser, transaction.getAmount(), null, "transfer");
+        } else {
+            currentUser.setBalance(currentUser.getBalance().add(transaction.getAmount()));
+            currentUser.setBankAccountBalance(currentUser.getBankAccountBalance().subtract(transaction.getAmount()));
+            userService.updateUser(currentUser);
+
+           createNewTransaction(currentUser, transaction.getAmount(), null, "receive");
+        }
     }
 }
