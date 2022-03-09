@@ -3,6 +3,7 @@ package com.openclassrooms.payMyBuddy.model;
 import lombok.Getter;
 import lombok.Setter;
 import javax.persistence.*;
+import javax.validation.constraints.Email;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +19,7 @@ public class User {
     private Integer id;
 
     @Column(name = "email")
+    @Email(message = "Invalid email format")
     private String email;
 
     @Column(name = "mot_de_passe")

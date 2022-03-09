@@ -21,7 +21,7 @@ import java.util.List;
 
 @Log4j2
 @Controller
-public class HomeController implements WebMvcConfigurer {
+public class HomeController {
     @Autowired
     UserService userService;
 
@@ -33,6 +33,11 @@ public class HomeController implements WebMvcConfigurer {
 
     @Autowired
     TransactionRepository transactionRepository;
+
+    @GetMapping("/")
+    public String redirectHome() {
+        return "redirect:/home";
+    }
 
     @GetMapping("/home/{pageNumber}")
     public String getOnePage (Model model, @PathVariable("pageNumber") int currentPage) {
