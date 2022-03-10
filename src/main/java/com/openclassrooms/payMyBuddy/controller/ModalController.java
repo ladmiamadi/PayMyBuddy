@@ -44,7 +44,7 @@ public class ModalController {
         Optional<User> user = userService.getUserByEmail(email);
 
         if(user.isPresent()) {
-            if(currentUser.getAddedUsers().contains(user)) {
+            if(currentUser.getAddedUsers().contains(user.get())) {
                 result.put("error", "Connection already exist in your list");
                 return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
             }

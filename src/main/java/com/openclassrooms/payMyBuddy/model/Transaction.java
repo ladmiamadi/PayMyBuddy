@@ -18,7 +18,7 @@ public class Transaction {
 
     @Min(value = 1, message = "The amount must be greater than 0€")
     @NotNull(message = "Amount can't be null")
-    @Digits(integer=3, fraction=2, message = "Invalid amount")
+    @Digits(integer=4, fraction=2, message = "Invalid amount")
     @Column(name = "montant")
     private BigDecimal amount;
 

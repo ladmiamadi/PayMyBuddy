@@ -1,5 +1,6 @@
 package com.openclassrooms.payMyBuddy.controller;
 
+import com.openclassrooms.payMyBuddy.exceptions.TransactionsExceptions;
 import com.openclassrooms.payMyBuddy.model.Transaction;
 import com.openclassrooms.payMyBuddy.model.User;
 import com.openclassrooms.payMyBuddy.service.HelperService;
@@ -8,6 +9,7 @@ import com.openclassrooms.payMyBuddy.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.TransactionException;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -81,26 +83,12 @@ public class TransferController {
 
                 return "transfer";
             }
-
-            if (Objects.equals(transaction.getType(), "transfer")) {
-                if (HelperService.calculateBalance(currentUser, transaction) < 0) {
-                    redirectAttributes.addFlashAttribute("error", "Your balance is insufficient!");
-                    return "redirect:/transfer";
-                }
-                    transactionService.transferMoney(currentUser, transaction, "transfer");
-                    redirectAttributes.addFlashAttribute("success", "money successfully transferred");
-
-            } else if (Objects.equals(transaction.getType(), "receive")) {
-                if (currentUser.getBankAccountBalance().subtract(transaction.getAmount()).compareTo(BigDecimal.valueOf(0)) < 0) {
-                    redirectAttributes.addFlashAttribute("error", "Your balance is insufficient!");
-                    return "redirect:/transfer";
-                }
-                    transactionService.transferMoney(currentUser, transaction, "receive");
+                try {
+                    transactionService.transferMoney(currentUser, transaction);
                     redirectAttributes.addFlashAttribute("success", "money successfully received");
-
-            } else {
-                redirectAttributes.addFlashAttribute("error", "Invalid operation");
-            }
+                } catch (TransactionsExceptions e) {
+                    redirectAttributes.addFlashAttribute("error", e.getMessage());
+                }
 
             return "redirect:/transfer";
         }
