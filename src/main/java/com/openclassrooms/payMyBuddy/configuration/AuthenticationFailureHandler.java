@@ -15,7 +15,7 @@ public class AuthenticationFailureHandler extends SimpleUrlAuthenticationFailure
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws ServletException, IOException {
         super.onAuthenticationFailure(request, response, exception);
         if (exception.getClass().isAssignableFrom(UsernameNotFoundException.class)) {
-            response.sendRedirect("Invalid email or password, try to correct informations or '<a>Sign up<a/> on our application");
+            response.sendRedirect("Invalid email or password, try to correct your informations or '<a>Sign up<a/> on our application");
         }
     }
 }

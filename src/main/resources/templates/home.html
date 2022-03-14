@@ -107,9 +107,20 @@
                     <div class="text-danger p-1" th:if="${#fields.hasErrors('amount')}" th:text="${error}"th:errors="*{amount}"></div>
                 </div>
                 <div class="col">
-                    <button type="submit" class="btn btn-success text-white w-75" style="background-color: #5cb95c">Pay</button>
+                    <button type="button" class="btn btn-success text-white w-75" style="background-color: #5cb95c" id="collapse-button"
+                            data-bs-toggle="collapse" data-bs-target="#collapse" aria-expanded="false" aria-controls="collapse">Pay</button>
+                    <button type="submit" class="btn btn-success text-white w-75" style="background-color: #5cb95c" id="pay-button">Pay</button>
                 </div>
                 <div class="col-1"></div>
+            </div>
+            <div class="collapse row bg-light p-5" id="collapse">
+                <div class="col-1"></div>
+                <div class="col">
+                    <input type="text" id="description" name="description" class="form-control border border-2 border-dark w-75"
+                        th:field="*{description}" placeholder="Description">
+                    <div class="text-danger p-1" th:if="${#fields.hasErrors('description')}" th:text="${error}"th:errors="*{description}"></div>
+                </div>
+                <div class="col-2"></div>
             </div>
         </form>
     </div>

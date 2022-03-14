@@ -130,7 +130,7 @@
                         <span class="page-link" th:unless="${currentPage > 1}">&laquo;</span>
                     </li>
                     <span th:each="i: ${#numbers.sequence(1, totalPages)}"><li class="page-item">
-        <a class="page-link" th:if="${i != currentPage}" th:href="@{'/transfer/' + ${i}}">[[${i}]]</a>
+        <a class="page-link" th:if="${i != currentPage && i != 0}" th:href="@{'/transfer/' + ${i}}">[[${i}]]</a>
         <span class="page-link" th:unless="${i != currentPage}" style="color: black">[[${i}]]</span>
         </li></span>
                     <li class="page-item">

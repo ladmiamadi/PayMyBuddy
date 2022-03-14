@@ -3,7 +3,6 @@ package com.openclassrooms.payMyBuddy.controller;
 import com.openclassrooms.payMyBuddy.exceptions.TransactionsExceptions;
 import com.openclassrooms.payMyBuddy.model.Transaction;
 import com.openclassrooms.payMyBuddy.model.User;
-import com.openclassrooms.payMyBuddy.repository.TransactionRepository;
 import com.openclassrooms.payMyBuddy.service.ConnectionService;
 import com.openclassrooms.payMyBuddy.service.TransactionService;
 import com.openclassrooms.payMyBuddy.service.UserService;
@@ -30,8 +29,6 @@ public class HomeController {
     @Autowired
     TransactionService transactionService;
 
-    @Autowired
-    TransactionRepository transactionRepository;
 
     @GetMapping("/")
     public String redirectHome() {
@@ -60,6 +57,7 @@ public class HomeController {
             model.addAttribute("addedUsers", addedUsers);
 
             return "home";
+
         }
     }
 

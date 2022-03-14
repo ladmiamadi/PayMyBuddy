@@ -1,6 +1,11 @@
-
-
 $(document).ready(function () {
+    $("#pay-button").hide();
+    $("#collapse-button").click(function (event) {
+        event.preventDefault();
+
+        $("#collapse-button").hide();
+        $("#pay-button").show();
+    });
 
     $("#add-connection").submit(function (event) {
 

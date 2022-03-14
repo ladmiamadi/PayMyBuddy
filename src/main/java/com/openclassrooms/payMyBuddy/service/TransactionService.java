@@ -50,15 +50,16 @@ public class TransactionService {
         transactionRepository.deleteById(id);
     }
 
-    public void createNewTransaction(User user, BigDecimal amount, User payedUser, String type) {
+    public Transaction createNewTransaction(User user, BigDecimal amount, User payedUser, String type, String description) {
         Transaction transaction = new Transaction();
         transaction.setAmount(amount);
         transaction.setUser(user);
         transaction.setPayedUser(payedUser);
         transaction.setType(type);
+        transaction.setDescription(description);
         transaction.setTransactionDate(HelperService.formattingNewDate());
 
-        transactionRepository.save(transaction);
+        return transactionRepository.save(transaction);
     }
 
     @Transactional(rollbackFor = TransactionsExceptions.class)
@@ -70,7 +71,7 @@ public class TransactionService {
         if (HelperService.calculateBalance(currentUser, transaction) < 0) {
             throw new TransactionsExceptions("You have "+ currentUser.getBalance()+ " € in your account. Your balance is insufficient!");
             }
-        createNewTransaction(currentUser, transaction.getAmount(), payedUser, "payment");
+        createNewTransaction(currentUser, transaction.getAmount(), payedUser, "payment", transaction.getDescription());
         currentUser.setBalance(currentUser.getBalance().subtract(transaction.getAmount()));
         payedUser.setBalance(payedUser.getBalance().add(transaction.getAmount()));
         userService.updateUser(payedUser);
@@ -99,7 +100,7 @@ public class TransactionService {
             throw new TransactionsExceptions("Invalid operation");
         }
 
-        createNewTransaction(currentUser, transaction.getAmount(), null, type);
+        createNewTransaction(currentUser, transaction.getAmount(), null, type, null);
         userService.updateUser(currentUser);
     }
 }

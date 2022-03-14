@@ -1,7 +1,6 @@
 package com.openclassrooms.payMyBuddy.controller;
 
 import com.openclassrooms.payMyBuddy.model.User;
-import com.openclassrooms.payMyBuddy.service.HelperService;
 import com.openclassrooms.payMyBuddy.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

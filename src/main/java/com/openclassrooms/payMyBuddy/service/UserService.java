@@ -1,5 +1,6 @@
 package com.openclassrooms.payMyBuddy.service;
 
+import com.openclassrooms.payMyBuddy.exceptions.TransactionsExceptions;
 import com.openclassrooms.payMyBuddy.model.User;
 import com.openclassrooms.payMyBuddy.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.Optional;
@@ -28,8 +30,8 @@ public class UserService {
         return userRepository.findById(id);
     }
 
-    public void addUser (User user) {
-        userRepository.save(user);
+    public User addUser (User user) {
+        return userRepository.save(user);
     }
 
     public Optional<User> getUserByEmail (String email) {
@@ -44,12 +46,8 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public void deleteUser (User user) {
-        userRepository.delete(user);
-    }
-
-    public void deleteUserById (Integer id) {
-        userRepository.deleteById(id);
+    public void deleteAddedUser(Integer id) {
+        userRepository.deleteAddedUserById(id);
     }
 
     public boolean checkIfUserExist(String email) {
@@ -68,12 +66,26 @@ public class UserService {
         return null;
     }
 
-    public void registerUser(User user) {
+    public User registerUser(User user) {
         user.setBalance(BigDecimal.valueOf(0));
         user.setBankAccountBalance(HelperService.randomBalance());
         user.setRegistrationDate(HelperService.formattingNewDate());
         encodePassword(user);
-        addUser(user);
+        return addUser(user);
+    }
+
+    @Transactional(rollbackFor = TransactionsExceptions.class)
+    public void deleteAddedUser(Integer id, User currentUser) throws TransactionsExceptions {
+       if(userRepository.findById(id).isEmpty()) {
+           throw new TransactionsExceptions("User not found");
+       }
+        User userToDelete = userRepository.findById(id).get();
+
+       if(currentUser.getAddedUsers().contains(userToDelete)) {
+            deleteAddedUser(id);
+       } else {
+           throw new TransactionsExceptions("Connection not found");
+       }
     }
 
 }
