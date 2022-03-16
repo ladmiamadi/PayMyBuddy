@@ -1,4 +1,6 @@
 $(document).ready(function () {
+
+    //display and hide description field
     $("#pay-button").hide();
     $("#collapse-button").click(function (event) {
         event.preventDefault();
@@ -7,6 +9,7 @@ $(document).ready(function () {
         $("#pay-button").show();
     });
 
+    // adding a new connection to the list
     $("#add-connection").submit(function (event) {
 
         event.preventDefault();

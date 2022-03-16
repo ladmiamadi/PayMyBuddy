@@ -22,24 +22,12 @@ public class UserService {
     @Autowired
     PasswordEncoder passwordEncoder;
 
-    public Iterable<User> getUsers () {
-        return userRepository.findAll();
-    }
-
-    public Optional<User> getUserById (Integer id) {
-        return userRepository.findById(id);
-    }
-
     public User addUser (User user) {
         return userRepository.save(user);
     }
 
     public Optional<User> getUserByEmail (String email) {
         return userRepository.findByEmail(email);
-    }
-
-    public  Optional<User> getConnectionByEmail( String email) {
-        return userRepository.findAddedUsersByEmail(email);
     }
 
     public void updateUser(User user){
@@ -58,6 +46,7 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
     }
 
+    //Check if user is authenticated
     public User currentUser () {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(!(authentication instanceof AnonymousAuthenticationToken)) {
@@ -87,5 +76,4 @@ public class UserService {
            throw new TransactionsExceptions("Connection not found");
        }
     }
-
 }

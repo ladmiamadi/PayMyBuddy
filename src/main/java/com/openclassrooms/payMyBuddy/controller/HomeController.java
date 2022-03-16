@@ -38,6 +38,7 @@ public class HomeController {
     @GetMapping("/home/{pageNumber}")
     public String getOnePage (Model model, @PathVariable("pageNumber") int currentPage) {
         if(userService.currentUser() == null) {
+            log.info("Unknown user, you had been redirected to login page");
             return "redirect:/login";
         } else {
             User currentUser = userService.currentUser();
@@ -56,8 +57,8 @@ public class HomeController {
             model.addAttribute("transaction", transaction);
             model.addAttribute("addedUsers", addedUsers);
 
+            log.info("Displaying home page");
             return "home";
-
         }
     }
 
@@ -71,16 +72,20 @@ public class HomeController {
                              BindingResult bindingResult,
                              RedirectAttributes redirectAttributes, Model model) {
         if(userService.currentUser() == null) {
+            log.info("Unknown user, you had been redirected to login page");
             return "redirect:/login";
         } else {
-
             User currentUser = userService.currentUser();
 
+            //capture errors from fields in the payment form
             if (bindingResult.hasErrors()) {
+                log.error("There are errors in the form, error ="+ bindingResult.getAllErrors());
+
                 Page<Transaction> page = transactionService.findHomePage(currentUser, "payment", 1);
                 int totalPages = page.getTotalPages();
                 long totalItems = page.getTotalElements();
 
+                //display form errors in home page
                 model.addAttribute("currentPage", 1);
                 model.addAttribute("totalPages", totalPages);
                 model.addAttribute("totalItems", totalItems);
@@ -91,10 +96,15 @@ public class HomeController {
                 return "home";
             }
                 try {
+                    //Transactional method
+                    log.debug("Creating Transaction: "+ transaction);
+
                     transactionService.payUser(currentUser, transaction);
                     redirectAttributes.addFlashAttribute("success", "successfully payed");
                 } catch (TransactionsExceptions e) {
                     redirectAttributes.addFlashAttribute("error", e.getMessage());
+
+                    log.error("Enable to create transaction, error="+ e.getMessage());
                     return "redirect:/home";
                 }
             return "redirect:/home";

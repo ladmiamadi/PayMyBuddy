@@ -1,15 +1,16 @@
-<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" >
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css"
           th:href="@{/webjars/bootstrap/5.1.3/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
     <title>Transfer</title>
 </head>
 <body class="container">
 <div class="row mt-1 text-dark" style="font-size: 18px">
     <div class="col-6 px-0">
-        <h4 class="d-inline-block px-4 py-2 bg-gradient text-center text-white rounded rounded-4 mt-2" style="background-color: #76bf51">Pay My Buddy</h4>
+        <h4 class="d-inline-block px-4 py-2 bg-gradient text-center text-white rounded rounded-4 mt-2">Pay My Buddy</h4>
     </div>
     <div class="col px-0">
         <nav class="navbar navbar-expand-lg navbar-light text-secondary">
@@ -63,7 +64,7 @@
         <form class="px-0 mx-0" th:action="@{/transfer}" method="post" th:object="${transaction}">
                 <div class="row bg-light p-3 d-flex flex-between">
                     <div class="col-3"></div>
-                    <div class="col">Bank balance: <span th:text="${user.bankAccountBalance}" style="font-weight: bold;"></span>€</div>
+                    <div class="col">Bank balance: <span id="bank-balance" th:text="${user.bankAccountBalance}"></span>€</div>
                     <div class="col">Account balance: <span th:text="${user.balance}" style="font-weight: bold;"></span>€</div>
                     <div class="col-3"></div>
                 </div>
@@ -99,8 +100,8 @@
     <div class="row w-75 mx-auto container px-0">
         <div class="col px-0 border border-3 border-dark">
             <table class="table table-striped table-hover border-none border-style-none mb-0 text-center">
-                <thead class="text-white" style="background-color: #5cb95c">
-                <tr style="height: 100px ; vertical-align: middle; font-size: 18px">
+                <thead class="text-white">
+                <tr id="head-table">
                     <td>Date</td>
                     <td>Type</td>
                     <td>Amount</td>
@@ -113,7 +114,7 @@
                 <tr th:each="transaction: ${transactions}">
                         <td><span th:text="${transaction.transactionDate}"></span></td>
                         <td><span th:text="${transaction.type}"></span></td>
-                        <td><span th:text="${transaction.amount}"></span></td>
+                        <td><span th:text="${transaction.amount}"></span>€</td>
                 </tr>
                 </tbody>
             </table>

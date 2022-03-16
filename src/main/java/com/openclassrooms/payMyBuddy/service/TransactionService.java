@@ -4,6 +4,7 @@ import com.openclassrooms.payMyBuddy.exceptions.TransactionsExceptions;
 import com.openclassrooms.payMyBuddy.model.Transaction;
 import com.openclassrooms.payMyBuddy.model.User;
 import com.openclassrooms.payMyBuddy.repository.TransactionRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -16,6 +17,7 @@ import java.math.BigDecimal;
 import java.util.Objects;
 
 @Service
+@Slf4j
 public class TransactionService {
     @Autowired
     TransactionRepository transactionRepository;
@@ -27,11 +29,6 @@ public class TransactionService {
         return transactionRepository.findAll();
     }
 
-    public Transaction addTransaction (Transaction transaction) {
-
-        return transactionRepository.save(transaction);
-    }
-
     public Page<Transaction> findHomePage(User user, String type, int pageNumber) {
         Pageable pageable = PageRequest.of(pageNumber -1,5, Sort.by("transactionDate").descending());
         return transactionRepository.findTransactionsByUserAndType(user, type, pageable);
@@ -40,14 +37,6 @@ public class TransactionService {
     public Page<Transaction> findTransferPage(User user, int pageNumber) {
         Pageable pageable = PageRequest.of(pageNumber -1,5, Sort.by("transactionDate").descending());
         return transactionRepository.findTransactionsByUserAndPayedUserEquals(user, null, pageable);
-    }
-
-    public void deleteTransaction (Transaction transaction) {
-        transactionRepository.delete(transaction);
-    }
-
-    public void deleteTransactionById (Integer id) {
-        transactionRepository.deleteById(id);
     }
 
     public Transaction createNewTransaction(User user, BigDecimal amount, User payedUser, String type, String description) {
@@ -69,6 +58,7 @@ public class TransactionService {
            throw new TransactionsExceptions("Select a valid connection!");}
 
         if (HelperService.calculateBalance(currentUser, transaction) < 0) {
+            log.error("Enable to pay "+ transaction.getAmount()+ ", balance is insufficient!");
             throw new TransactionsExceptions("You have "+ currentUser.getBalance()+ " € in your account. Your balance is insufficient!");
             }
         createNewTransaction(currentUser, transaction.getAmount(), payedUser, "payment", transaction.getDescription());
@@ -82,8 +72,10 @@ public class TransactionService {
     public void transferMoney(User currentUser, Transaction transaction) throws TransactionsExceptions{
         String type = transaction.getType();
 
+        //Check operation type
         if(Objects.equals(type, "transfer")) {
             if (HelperService.calculateBalance(currentUser, transaction) < 0) {
+                log.error("Enable to pay "+ transaction.getAmount()+ ", balance is insufficient!");
                 throw new TransactionsExceptions("Your balance is insufficient!");
             }
 
@@ -91,12 +83,14 @@ public class TransactionService {
             currentUser.setBankAccountBalance(currentUser.getBankAccountBalance().add(transaction.getAmount()));
         } else if(Objects.equals(type, "receive")){
             if (currentUser.getBankAccountBalance().subtract(transaction.getAmount()).compareTo(BigDecimal.valueOf(0)) < 0) {
+                log.error("Enable to pay "+ transaction.getAmount()+ ", balance is insufficient!");
                 throw new TransactionsExceptions("Your balance is insufficient!");
             }
 
             currentUser.setBalance(currentUser.getBalance().add(transaction.getAmount()));
             currentUser.setBankAccountBalance(currentUser.getBankAccountBalance().subtract(transaction.getAmount()));
         } else {
+            log.error("Invalid operation");
             throw new TransactionsExceptions("Invalid operation");
         }
 

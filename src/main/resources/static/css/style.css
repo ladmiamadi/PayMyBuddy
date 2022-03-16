@@ -1,0 +1,18 @@
+h4, #collapse-button, head {
+    background-color: #76bf51
+}
+
+#head-table, #head-transfer {
+    height: 100px;
+    vertical-align: middle;
+    font-size: 18px;
+    background-color: #76bf51;
+}
+
+#bank-balance {
+    font-weight: bold;
+}
+
+.checkbox {
+    font-size: 18px;
+}
