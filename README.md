@@ -12,4 +12,4 @@
 
 
 #SQL Scripts
-![alt text](https://github.com/ladmiamadi/PayMyBuddy/blob/final-branch/src/main/resources/static/sql/P6_03_scriptsSQL.sql?raw=true)
+![scripts.sql](https://github.com/ladmiamadi/PayMyBuddy/blob/final-branch/src/main/resources/static/sql/P6_03_scriptsSQL.sql?raw=true)
