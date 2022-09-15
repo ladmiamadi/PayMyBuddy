@@ -17,10 +17,10 @@
 # Demonstration
 
 # LogIn page
-![alt text](https://github.com/ladmiamadi/PayMyBuddy/blob/final-branch/accueil-payMyBuddy.png?raw=true)
+![alt text](https://github.com/ladmiamadi/PayMyBuddy/blob/final-branch/logIn.png?raw=true)
 
 # Home page
-![alt text](https://github.com/ladmiamadi/PayMyBuddy/blob/final-branch/home-pay-mybuddy.png?raw=true)
+![alt text](https://github.com/ladmiamadi/PayMyBuddy/blob/final-branch/home.png?raw=true)
 
 # Edit profile page
 
