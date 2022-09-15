@@ -20,7 +20,7 @@
 ![alt text](https://github.com/ladmiamadi/PayMyBuddy/blob/final-branch/accueil-payMyBuddy.png?raw=true)
 
 # Home page
-![alt text](https://github.com/ladmiamadi/PayMyBuddy/blob/final-branch/home-pay-my-buddy.png?raw=true)
+![alt text](https://github.com/ladmiamadi/PayMyBuddy/blob/final-branch/home-pay-mybuddy.png?raw=true)
 
 # Edit profile page
 
